@@ -18,10 +18,10 @@ public class StudyTogether implements Serializable {
 	
 	@ApiModelProperty(value = "主键id，雪花算法")
 	@TableId(value = "id", type = IdType.ASSIGN_ID)
-	private Integer id;
+	private Long id;
 	
 	@ApiModelProperty(value = "用户id")
-	private Integer userId;
+	private Long userId;
 	
 	@ApiModelProperty(value = "用户名")
 	private String userName;
@@ -36,7 +36,7 @@ public class StudyTogether implements Serializable {
 	private String detail;
 	
 	@ApiModelProperty(value = "当日学习时长，自动计算")
-	private Integer todayStudyCount;
+	private float todayStudyCount;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	@ApiModelProperty(value = "录入时间")
 	private Date createTime;
@@ -48,19 +48,19 @@ public class StudyTogether implements Serializable {
 	private String createIp;
 	
 	@JsonProperty("id")
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id =  id;
 	}
 	@JsonProperty("userId")
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(Long userId) {
 		this.userId =  userId;
 	}
 	@JsonProperty("userName")
@@ -96,11 +96,11 @@ public class StudyTogether implements Serializable {
 		this.detail =  detail;
 	}
 	@JsonProperty("todayStudyCount")
-	public Integer getTodayStudyCount() {
+	public float getTodayStudyCount() {
 		return todayStudyCount;
 	}
 
-	public void setTodayStudyCount(Integer todayStudyCount) {
+	public void setTodayStudyCount(float todayStudyCount) {
 		this.todayStudyCount =  todayStudyCount;
 	}
 	@JsonProperty("createTime")
@@ -129,7 +129,7 @@ public class StudyTogether implements Serializable {
 	}
 
 
-	public StudyTogether(Integer id,Integer userId,String userName,Date studyStartTime,Date studyEndTime,String detail,Integer todayStudyCount,Date createTime,String createUser,String createIp) {
+	public StudyTogether(Long id,Long userId,String userName,Date studyStartTime,Date studyEndTime,String detail,float todayStudyCount,Date createTime,String createUser,String createIp) {
 		
 		this.id = id;
 		

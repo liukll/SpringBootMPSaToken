@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.groups.Default;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -61,11 +63,14 @@ public class StudyTogetherController extends BaseController{
 	@GetMapping("/list")
 	@SaCheckPermission("gen:studyTogether:list")
 	@ResponseBody
-	public ResultTable list(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize , StudyTogether studyTogether){
-		PageHelper.startPage(pageNum, pageSize);
-		List<StudyTogether> studyTogetherList = studyTogetherService.list();
-		PageInfo<StudyTogether> page = new PageInfo<>(studyTogetherList);
-		return pageTable(page.getList(),page.getTotal());
+	public ResultTable list(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit , StudyTogether studyTogether){
+		PageHelper.startPage(page, limit);
+		TsysUser tsysUser = SaTokenUtil.getUser();
+		List<StudyTogether> studyTogetherList = studyTogetherService.lambdaQuery()
+				.eq(StudyTogether::getCreateUser, tsysUser.getUsername())
+				.list();
+		PageInfo<StudyTogether> pageInfo = new PageInfo<>(studyTogetherList);
+		return pageTable(pageInfo.getList(),pageInfo.getTotal());
 	}
 	
 	/**
@@ -89,11 +94,16 @@ public class StudyTogetherController extends BaseController{
 	@ResponseBody
 	public AjaxResult add(StudyTogether studyTogether, HttpServletRequest request){
 		TsysUser tsysUser = SaTokenUtil.getUser();
-		studyTogether.setUserId(Integer.valueOf(tsysUser.getId()));
+		studyTogether.setUserId(Long.valueOf(tsysUser.getId()));
 		studyTogether.setUserName(tsysUser.getUsername());
 		studyTogether.setCreateIp(request.getRemoteAddr());
 		studyTogether.setCreateTime(new Date());
 		studyTogether.setCreateUser(tsysUser.getUsername());
+		Long startTime = studyTogether.getStudyStartTime().getTime();
+		Long endTime = studyTogether.getStudyEndTime().getTime();
+		float time = new BigDecimal((endTime - startTime) / 1000 / 60)
+				.setScale(1, RoundingMode.HALF_UP).floatValue();
+		studyTogether.setTodayStudyCount(time);
 		boolean rtn = studyTogetherService.save(studyTogether);
 		if(rtn){
 			return success();
