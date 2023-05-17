@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('学习记录表修改')"/>
+</head>
+<body>
+<form class="layui-form" action=""  th:object="${StudyTogether}">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+
+						<div class="layui-form-item layui-hide">
+		                    <label class="layui-form-label">主键id，雪花算法</label>
+		                    <div class="layui-input-block">
+		                        <input type="text" th:value="*{id}" name="id" lay-verify="title"
+		                               autocomplete="off" class="layui-input">
+		                    </div>
+		                </div>
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">用户id</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{userId}" type="text" name="userId" autocomplete="off" placeholder="用户id" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">用户名</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{userName}" type="text" name="userName" autocomplete="off" placeholder="用户名" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">学习开始时间</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{studyStartTime}" type="text" name="studyStartTime" autocomplete="off" placeholder="学习开始时间" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">学习结束时间</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{studyEndTime}" type="text" name="studyEndTime" autocomplete="off" placeholder="学习结束时间" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">学习内容</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{detail}" type="text" name="detail" autocomplete="off" placeholder="学习内容" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">当日学习时长，自动计算</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{todayStudyCount}" type="text" name="todayStudyCount" autocomplete="off" placeholder="当日学习时长，自动计算" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">录入时间</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{createTime}" type="text" name="createTime" autocomplete="off" placeholder="录入时间" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">创建人</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{createUser}" type="text" name="createUser" autocomplete="off" placeholder="创建人" class="layui-input">
+		                    </div>
+		                </div>
+					                
+		
+					
+						<div class="layui-form-item">
+		                    <label class="layui-form-label">创建数据ip地址</label>
+		                    <div class="layui-input-block">
+		                        <input th:value="*{createIp}" type="text" name="createIp" autocomplete="off" placeholder="创建数据ip地址" class="layui-input">
+		                    </div>
+		                </div>
+					                
+
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit=""
+                    lay-filter="studyTogether-update">
+                <i class="layui-icon layui-icon-ok"></i>
+				提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+				重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form','laydate','jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let MODULE_PATH = rootPath+"/StudyTogetherController";
+
+
+        form.on('submit(studyTogether-update)', function (data) {
+        	let loader = layer.load();
+            $.ajax({
+                url: MODULE_PATH+'/edit',
+                data: data.field,
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded',
+                type: 'post',
+                success: function (result) {
+                    if (result.code==200) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("studyTogether-table");
+                            layer.close(loader);
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                        layer.close(loader);
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('学习记录表新增')"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+
+							<div class="layui-form-item">
+			                    <label class="layui-form-label">学习开始时间</label>
+			                    <div class="layui-input-block">
+			                        <input type="text" name="studyStartTime" id="studyStartTime" autocomplete="off" placeholder="学习开始时间" class="layui-input">
+			                    </div>
+			                </div>
+		
+
+							<div class="layui-form-item">
+			                    <label class="layui-form-label">学习结束时间</label>
+			                    <div class="layui-input-block">
+			                        <input type="text" name="studyEndTime" id="studyEndTime"  autocomplete="off" placeholder="学习结束时间" class="layui-input">
+			                    </div>
+			                </div>
+		
+
+							<div class="layui-form-item">
+			                    <label class="layui-form-label">学习内容</label>
+			                    <div class="layui-input-block">
+			                        <input type="text" name="detail" autocomplete="off" placeholder="学习内容" class="layui-input">
+			                    </div>
+			                </div>
+		
+
+							<div class="layui-form-item">
+			                    <label class="layui-form-label">当日学习时长，自动计算</label>
+			                    <div class="layui-input-block">
+			                        <input type="text" name="todayStudyCount" autocomplete="off" placeholder="当日学习时长，自动计算" class="layui-input">
+			                    </div>
+			                </div>
+		
+
+
+							<div class="layui-form-item">
+			                    <label class="layui-form-label">创建数据ip地址</label>
+			                    <div class="layui-input-block">
+			                        <input type="text" name="createIp" autocomplete="off" placeholder="创建数据ip地址" class="layui-input">
+			                    </div>
+			                </div>
+		
+
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit="" lay-filter="studyTogether-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form','laydate','jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+		let laydate = layui.laydate;
+        let MODULE_PATH = rootPath+"/StudyTogetherController";
+
+		laydate.render({
+			elem: '#studyStartTime',
+			format:'yyyy-MM-dd HH:mm:ss',
+			type: 'datetime'
+		});
+		laydate.render({
+			elem: '#studyEndTime',
+			format:'yyyy-MM-dd HH:mm:ss',
+			type: 'datetime'
+		});
+        //保存
+        form.on('submit(studyTogether-save)', function (data) {
+        	let loader = layer.load();
+            $.ajax({
+                url: MODULE_PATH+'/add',
+                data: data.field,
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded',
+                type: 'post',
+                success: function (result) {
+                    if (result.code==200) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("studyTogether-table");
+                            layer.close(loader);
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                        layer.close(loader);
+                    }
+                }
+            })
+            return false;
+        });
+    })
+
+
+</script>
+</body>
+</html>
