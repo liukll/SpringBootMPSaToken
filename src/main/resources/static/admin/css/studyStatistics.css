@@ -1,0 +1,97 @@
+.fx-container{
+    margin: 12px;
+    padding-bottom: 20px;
+}
+.fx-block{
+    padding: 16px;
+    background-color: #FFF;
+    border-radius: 6px;
+}
+.block-title{
+    font-weight: bold;
+}
+.fx-search{
+    min-height: 50px;
+    margin: 0 auto;
+}
+.fx-search.fx-width-800{
+    width: 800px;
+    max-width: 100%;
+}
+.fx-search.fx-width-900{
+    width: 900px;
+    max-width: 100%;
+}
+.fx-search.fx-width-800p{
+    min-width: 800px;
+    max-width: 80%;
+}
+.fx-search .layui-form-label{
+    padding-right: 0;
+}
+.fx-search .layui-input-block{
+    margin-left: 103px;
+}
+.fx-label2 .layui-form-label{
+    width: 50px;
+}
+.fx-label2 .layui-input-block{
+    margin-left: 73px;
+}
+.fx-label4 .layui-form-label{
+    width: 67px;
+}
+.fx-label4 .layui-input-block{
+    margin-left: 90px;
+}
+.fx-radio-box{
+    padding: 6px 8px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.fx-radio-box:hover{
+    /* background-color: #009688; */
+    color: #009688;
+}
+.fx-radio-box.fx-radio-box-checked{
+    background-color: #009688;
+    color: #FFF;
+}
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.fx-width20{
+    width: 20%;
+    float: left;
+}
+.fx-width25{
+    width: 25%;
+    float: left;
+}
+.fx-width30{
+    width: 30%;
+    float: left;
+}
+.fx-width33{
+    width: 33.3333%;
+    float: left;
+}
+.fx-width40{
+    width: 40%;
+    float: left;
+}
+.fx-width50{
+    width: 50%;
+    float: left;
+}
+.fx-width60{
+    width: 60%;
+    float: left;
+}
+.fx-width100{
+    width: 100%;
+    float: left;
+}

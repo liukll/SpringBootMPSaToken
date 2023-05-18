@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('学习统计分析')"/>
+    <link rel="stylesheet" th:href="@{/static/admin/css/studyStatistics.css}" media="all">
+</head>
+<body style="background-color:whitesmoke;">
+<div class="fx-container">
+    <div class="fx-block" style="padding-bottom:0;margin-bottom:12px">
+        <div class="fx-search layui-row layui-col-space1 fx-label4" style="width:810px" id="query_div">
+            <form id="queryForm" name="queryForm" lay-filter="queryForm" class="layui-form">
+                <div class="layui-form-item">
+                    <div class="fx-width33">
+                        <label class="layui-form-label">日期范围</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="rangDate" name="rangDate" lay-filter="rangDate"
+                                   placeholder="请选择日期"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="layui-row layui-col-space12">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="fx-block">
+                <div class="block-title">
+                    <span class="changeName">学习时长统计</span>
+                </div>
+                <div id="echarts1" style="width:100%;height:550px"></div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="fx-block">
+                <div class="block-title">
+                    <span class="changeName">学习时长趋势</span>
+                </div>
+                <div id="echarts2" style="width:100%;height:550px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['laydate', 'util'], function () {
+        var form = layui.form;
+        var laydate = layui.laydate;
+        // 初始化日期
+        laydate.render({
+            elem: '#rangDate',
+            range: "~",
+            change: function (value, date, endDate) {
+                console.log(value); //得到日期生成的值，如：2017-08-18
+                console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+                //选择具体日期范围后，清空固定段日期
+                form.val("queryForm", {
+                    quarter: "",
+                    month: ""
+                });
+                $("#year .fx-radio-box").removeClass("fx-radio-box-checked");
+                let tmp = '<option value="">请选择</option>';
+                $("#quarter").html(tmp);
+                $("#month").html(tmp);
+                form.render();
+            }
+        });
+
+        function queryData() {
+            getEchartData();
+        }
+
+        // 重置表单
+        function formReset() {
+            // 清空表单
+            form.val("queryForm", {
+                rangDate: ""
+            });
+        }
+
+        //查询按钮
+        $("#queryButton").on("click", function () {
+            queryData();
+        });
+        // 重置按钮
+        $("#formReset").on("click", function () {
+            formReset();
+        });
+
+        function updateEchart1(json) {
+            let myChart = echarts.init(document.getElementById('echarts1'));
+            let option = {
+                legend: {},
+                tooltip: {},
+                dataset: {
+                    dimensions: ['product', '2015', '2016', '2017'],
+                    source: [
+                        { product: 'Matcha Latte', 2015: 43.3, 2016: 85.8, 2017: 93.7 },
+                        { product: 'Milk Tea', 2015: 83.1, 2016: 73.4, 2017: 55.1 },
+                        { product: 'Cheese Cocoa', 2015: 86.4, 2016: 65.2, 2017: 82.5 },
+                        { product: 'Walnut Brownie', 2015: 72.4, 2016: 53.9, 2017: 39.1 }
+                    ]
+                },
+                xAxis: { type: 'category' },
+                yAxis: {},
+                // Declare several bar series, each will be mapped
+                // to a column of dataset.source by default.
+                series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.clear();
+            myChart.setOption(option);
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        };
+
+        function updateEchart2(json) {
+            let myChart = echarts.init(document.getElementById('echarts2'));
+            let option = {
+                xAxis: {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [150, 230, 224, 218, 135, 147, 260],
+                        type: 'line'
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.clear();
+            myChart.setOption(option);
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+        };
+
+
+        // 获取图表数据
+        function getEchartData() {
+            let param = {
+                rangDate: $("#rangDate").val(),
+                iCType: $("#iCType").val(),
+                model: $("#model").val(),
+                batch: $("#batch").val(),
+                factory: $("#factory").val()
+            }
+            $.ajax({
+                url: rootPath + '/icCardUse/getICCardAnalysisData',
+                data: param,
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    const echart1 = result.data.numMap;
+                    const echart2 = result.data.avgPlugNumMap;
+                    updateEchart1(echart1);
+                    updateEchart2(echart2);
+                }
+            });
+        }
+
+        //getEchartData();
+        updateEchart1();
+        updateEchart2();
+    });
+
+</script>
+</body>
+</html>
