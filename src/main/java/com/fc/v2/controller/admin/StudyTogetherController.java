@@ -190,10 +190,10 @@ public class StudyTogetherController extends BaseController {
         List<LinkedHashMap<String, Object>> timeCountStatistics = studyTogetherMapper.getTimeCountStatistics(startDate, endDate);
         List<LinkedHashMap<String, Object>> timeCountTrend = studyTogetherMapper.getTimeCountTrend(startDate, endDate, userId);
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("xList1", timeCountStatistics.stream().map(it -> it.get("username")).toList());
-        returnMap.put("yList1", timeCountStatistics.stream().map(it -> it.get("timecount")).toList());
-        returnMap.put("xList2", timeCountTrend.stream().map(it -> it.get("date")).toList());
-        returnMap.put("yList2", timeCountTrend.stream().map(it -> it.get("timecount")).toList());
+        returnMap.put("xList1", timeCountStatistics.stream().map(it -> it.get("username")).toArray());
+        returnMap.put("yList1", timeCountStatistics.stream().map(it -> it.get("timecount")).toArray());
+        returnMap.put("xList2", timeCountTrend.stream().map(it -> it.get("date")).toArray());
+        returnMap.put("yList2", timeCountTrend.stream().map(it -> it.get("timecount")).toArray());
         return dataTable(returnMap);
     }
 
