@@ -1,31 +1,32 @@
 package com.fc.v2.controller.admin;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fc.v2.common.base.BaseController;
 import com.fc.v2.common.domain.AjaxResult;
 import com.fc.v2.common.domain.ResultTable;
+import com.fc.v2.mapper.auto.StudyTogetherMapper;
+import com.fc.v2.mapper.custom.TsysUserDao;
 import com.fc.v2.model.auto.TsysUser;
-import com.fc.v2.model.custom.Tablepar;
 import com.fc.v2.model.auto.StudyTogether;
+import com.fc.v2.model.custom.Tablepar;
 import com.fc.v2.satoken.SaTokenUtil;
 import com.fc.v2.service.StudyTogetherService;
+import com.fc.v2.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import net.bytebuddy.implementation.bytecode.constant.DefaultValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 学习记录表Controller
@@ -43,7 +44,8 @@ public class StudyTogetherController extends BaseController {
 
     @Autowired
     private StudyTogetherService studyTogetherService;
-
+    @Resource
+    private StudyTogetherMapper studyTogetherMapper;
 
     /**
      * 学习记录表页面展示
@@ -138,7 +140,7 @@ public class StudyTogetherController extends BaseController {
      * 修改跳转
      *
      * @param id
-     * @param mmap
+     * @param map
      * @return
      */
     @ApiOperation(value = "修改跳转", notes = "修改跳转")
@@ -166,12 +168,41 @@ public class StudyTogetherController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "学习记录统计", notes = "学习记录统计")
+    @ApiOperation(value = "学习记录统计页面", notes = "学习记录统计页面")
     @SaCheckPermission("gen:studyTogether:statistics")
     @GetMapping("/statisticsPage")
     public String statisticsPage() {
         return "admin/studyTogether/studyStatistics";
     }
 
+    @ApiOperation(value = "学习记录统计数据", notes = "学习记录统计数据")
+    @SaCheckPermission("gen:studyTogether:statistics")
+    @GetMapping("/statisticsData")
+    @ResponseBody
+    public ResultTable statisticsData(@RequestParam(value = "rangDate") String rangeData, @RequestParam(value = "userId") String userId) {
+        String startDate = "";
+        String endDate = "";
+        if (StringUtils.isNotEmpty(rangeData)) {
+            String[] split = rangeData.split(" ~ ");
+            startDate = split[0];
+            endDate = split[1];
+        }
+        List<LinkedHashMap<String, Object>> timeCountStatistics = studyTogetherMapper.getTimeCountStatistics(startDate, endDate);
+        List<LinkedHashMap<String, Object>> timeCountTrend = studyTogetherMapper.getTimeCountTrend(startDate, endDate, userId);
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("xList1", timeCountStatistics.stream().map(it -> it.get("username")).toList());
+        returnMap.put("yList1", timeCountStatistics.stream().map(it -> it.get("timecount")).toList());
+        returnMap.put("xList2", timeCountTrend.stream().map(it -> it.get("date")).toList());
+        returnMap.put("yList2", timeCountTrend.stream().map(it -> it.get("timecount")).toList());
+        return dataTable(returnMap);
+    }
 
+    @ApiOperation(value = "获取用户", notes = "获取用户")
+    @GetMapping("/userList")
+    @SaCheckPermission("system:user:list")
+    @ResponseBody
+    public ResultTable userList() {
+        List<Map<String, Object>> userList = studyTogetherMapper.getUserList();
+        return dataTable(userList);
+    }
 }

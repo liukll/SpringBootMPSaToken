@@ -7,7 +7,7 @@ spring:
     druid:
      #主库数据源
      master:
-        url: jdbc:mysql://101.200.145.49:3306/satokens?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT
+        url: jdbc:mysql://101.200.145.49:3306/satokens?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=Asia/Shanghai
         username: root
         password: LIUkl@159357
      #备数据源 #关闭
