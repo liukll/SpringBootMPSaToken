@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 学习记录表Controller
@@ -68,12 +69,11 @@ public class StudyTogetherController extends BaseController {
     @ResponseBody
     public ResultTable list(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit, StudyTogether studyTogether) {
         PageHelper.startPage(page, limit);
-        TsysUser tsysUser = SaTokenUtil.getUser();
-        List<StudyTogether> studyTogetherList = studyTogetherService.lambdaQuery()
-                .eq(StudyTogether::getCreateUser, tsysUser.getUsername())
-                .list();
+//        TsysUser tsysUser = SaTokenUtil.getUser();
+        List<StudyTogether> studyTogetherList = studyTogetherMapper.getStudyList();
         PageInfo<StudyTogether> pageInfo = new PageInfo<>(studyTogetherList);
-        return pageTable(pageInfo.getList(), pageInfo.getTotal());
+        List<StudyTogether> list = pageInfo.getList().stream().peek(it -> it.setIdStr(it.getId().toString())).collect(Collectors.toList());
+        return pageTable(list, pageInfo.getTotal());
     }
 
     /**

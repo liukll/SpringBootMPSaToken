@@ -94,7 +94,7 @@
             [
                {type: 'checkbox'},
                 	
-               {title: '主键id，雪花算法', field: 'id', align: 'center'},
+               {title: '主键id，雪花算法', field: 'idStr', align: 'center'},
                 	
                {title: '用户名', field: 'userName', align: 'center'},
                 	
@@ -171,7 +171,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['500px', '500px'],
-                content: MODULE_PATH + 'edit/' + obj.data['id']
+                content: MODULE_PATH + 'edit/' + obj.data['idStr']
             });
         }
         //删除
@@ -180,7 +180,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: MODULE_PATH + "remove?ids=" + obj.data['id'],
+                    url: MODULE_PATH + "remove?ids=" + obj.data['idStr'],
                     dataType: 'json',
                     type: 'delete',
                     success: function (result) {

@@ -40,4 +40,7 @@ public interface StudyTogetherMapper extends BaseMapper<StudyTogether> {
 
     @Select(" select id,username from t_sys_user where username<>'admin' ")
     List<Map<String, Object>> getUserList();
+
+    @Select(" select * from study_together ")
+    List<StudyTogether> getStudyList();
 }

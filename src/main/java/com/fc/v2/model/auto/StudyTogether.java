@@ -3,6 +3,7 @@ package com.fc.v2.model.auto;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,10 +16,13 @@ import java.util.Date;
 public class StudyTogether implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	
+
 	@ApiModelProperty(value = "主键id，雪花算法")
 	@TableId(value = "id", type = IdType.ASSIGN_ID)
 	private Long id;
+
+	@TableField(exist = false)
+	private String idStr;
 	
 	@ApiModelProperty(value = "用户id")
 	private Long userId;
@@ -55,6 +59,14 @@ public class StudyTogether implements Serializable {
 	public void setId(Long id) {
 		this.id =  id;
 	}
+
+	public String getIdStr() {
+		return idStr;
+	}
+	public void setIdStr(String idStr) {
+		this.idStr = idStr;
+	}
+
 	@JsonProperty("userId")
 	public Long getUserId() {
 		return userId;
